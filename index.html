@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0d47a1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="JSH Hospital">
+<title>Jeevan Sahara Hospital</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:#eef2f7;color:#222;padding-bottom:78px;font-size:15px}
+.header{background:linear-gradient(135deg,#1e6fd9,#0d47a1);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.header h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:6px}
+.header .info{font-size:10.5px;opacity:.92;margin-top:3px;line-height:1.4}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;box-shadow:0 -2px 12px rgba(0,0,0,.14);border-top:1px solid #e0e0e0;z-index:1000;padding:6px 0 8px}
+.bottom-nav button{flex:1;border:none;background:none;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#888;font-size:10px;font-weight:600;cursor:pointer;transition:.2s}
+.bottom-nav button .icon{font-size:21px;line-height:1}
+.bottom-nav button.active{color:#1e6fd9;transform:scale(1.05)}
+.container{padding:12px;max-width:100%}
+.page{display:none;animation:fade .25s}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card h2{font-size:15px;margin-bottom:14px;color:#0d47a1;border-bottom:2px solid #eef2f7;padding-bottom:10px;display:flex;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:linear-gradient(135deg,#1e6fd9,#0d47a1);color:#fff;padding:14px;border-radius:12px;min-height:80px;display:flex;flex-direction:column;justify-content:center}
+.stat.green{background:linear-gradient(135deg,#2e7d32,#1b5e20)}
+.stat.orange{background:linear-gradient(135deg,#ef6c00,#e65100)}
+.stat.red{background:linear-gradient(135deg,#c62828,#b71c1c)}
+.stat .label{font-size:11px;opacity:.9;font-weight:500}
+.stat .value{font-size:22px;font-weight:700;margin-top:4px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#444}
+input,select,textarea{width:100%;padding:13px 12px;border:1.5px solid #ccd6e0;border-radius:10px;font-size:15px;margin-bottom:12px;background:#fafbfc;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none;border-color:#1e6fd9;background:#fff;box-shadow:0 0 0 3px rgba(30,111,217,.1)}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23666' d='M6 9L1 4h10z'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:35px}
+.btn{width:100%;padding:14px;border:none;border-radius:10px;background:#1e6fd9;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:.15s;margin-bottom:8px}
+.btn:active{transform:scale(.98)}
+.btn.green{background:#2e7d32}
+.btn.red{background:#c62828}
+.btn.small{width:auto;padding:7px 14px;font-size:12px;margin:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;margin:0 -4px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #eef2f7;white-space:nowrap}
+th{background:#f7fafc;color:#0d47a1;font-weight:700;font-size:12px}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.badge.green{background:#e8f5e9;color:#2e7d32}
+.badge.red{background:#ffebee;color:#c62828}
+.badge.orange{background:#fff3e0;color:#e65100}
+.alert{padding:12px 14px;border-radius:10px;margin-bottom:10px;font-size:13px;line-height:1.4}
+.alert.warn{background:#fff3e0;color:#e65100;border-left:4px solid #ef6c00}
+.alert.danger{background:#ffebee;color:#c62828;border-left:4px solid #c62828}
+.toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%) translateY(100px);background:#2e7d32;color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:.3s;box-shadow:0 4px 20px rgba(0,0,0,.3);max-width:90%}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.empty{text-align:center;padding:20px;color:#999;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏥 Jeevan Sahara Hospital</h1>
+  <div class="info">📍 Aonla, Bareilly &nbsp;|&nbsp; 📞 8445256491, 6396148530</div>
+  <div class="info">✉️ drjaved7824@gmail.com</div>
+</div>
+
+<div class="container">
+<div id="dashboard" class="page active">
+  <div class="grid" id="dashStats"></div>
+  <div class="card"><h2>⚠️ Alerts</h2><div id="dashAlerts"></div></div>
+</div>
+
+<div id="staff" class="page">
+  <div class="card">
+    <h2>➕ Naya Staff</h2>
+    <label>Naam</label><input id="sName" placeholder="Staff ka naam">
+    <label>Role</label>
+    <select id="sRole"><option>Doctor</option><option>Nurse</option><option>Compounder</option><option>Receptionist</option><option>Helper</option><option>Cleaner</option></select>
+    <label>Mobile</label><input id="sPhone" type="tel" placeholder="10 digit">
+    <label>Monthly Salary (₹)</label><input id="sSalary" type="number" placeholder="15000">
+    <button class="btn green" onclick="addStaff()">💾 Save Staff</button>
+  </div>
+  <div class="card">
+    <h2>👥 Staff List</h2>
+    <div class="table-wrap"><table id="staffTable"></table></div>
+  </div>
+</div>
+
+<div id="attendance" class="page">
+  <div class="card">
+    <h2>📅 Attendance</h2>
+    <label>Date</label><input type="date" id="attDate">
+    <div class="table-wrap"><table id="attTable"></table></div>
+    <br><button class="btn green" onclick="saveAttendance()">💾 Save Attendance</button>
+  </div>
+</div>
+
+<div id="salary" class="page">
+  <div class="card">
+    <h2>💰 Salary</h2>
+    <label>Month</label><input type="month" id="salMonth">
+    <button class="btn" onclick="calcSalary()">📊 Calculate</button>
+    <div class="table-wrap" style="margin-top:14px"><table id="salTable"></table></div>
+  </div>
+</div>
+
+<div id="patients" class="page">
+  <div class="card">
+    <h2>➕ Naya Patient</h2>
+    <label>Naam</label><input id="pName" placeholder="Patient ka naam">
+    <div class="row">
+      <div><label>Age</label><input id="pAge" type="number"></div>
+      <div><label>Gender</label><select id="pGender"><option>Male</option><option>Female</option><option>Other</option></select></div>
+    </div>
+    <label>Mobile</label><input id="pPhone" type="tel">
+    <label>Problem</label><input id="pProblem" placeholder="Bimari">
+    <button class="btn green" onclick="addPatient()">💾 Save Patient</button>
+  </div>
+  <div class="card">
+    <h2>🧑‍🦱 Patients</h2>
+    <input placeholder="🔍 Search..." oninput="renderPatients(this.value)">
+    <div class="table-wrap"><table id="patientTable"></table></div>
+  </div>
+</div>
+
+<div id="medicine" class="page">
+  <div class="card">
+    <h2>➕ Medicine Add</h2>
+    <label>Medicine Name</label><input id="mName" placeholder="Paracetamol">
+    <div class="row">
+      <div><label>Qty</label><input id="mQty" type="number"></div>
+      <div><label>Price ₹</label><input id="mPrice" type="number"></div>
+    </div>
+    <label>Expiry Date</label><input id="mExp" type="date">
+    <button class="btn green" onclick="addMedicine()">💾 Save</button>
+  </div>
+  <div class="card">
+    <h2>💊 Stock</h2>
+    <div class="table-wrap"><table id="medTable"></table></div>
+  </div>
+</div>
+
+<div id="billing" class="page">
+  <div class="card">
+    <h2>🧾 Naya Bill</h2>
+    <label>Patient</label><select id="bPatient"></select>
+    <div class="row">
+      <div><label>Consult ₹</label><input id="bConsult" type="number" value="200"></div>
+      <div><label>Medicine ₹</label><input id="bMed" type="number" value="0"></div>
+    </div>
+    <label>Other ₹</label><input id="bOther" type="number" value="0">
+    <button class="btn green" onclick="addBill()">🧾 Generate Bill</button>
+  </div>
+  <div class="card">
+    <h2>📋 Bill History</h2>
+    <div class="table-wrap"><table id="billTable"></table></div>
+  </div>
+</div>
+</div>
+
+<div class="bottom-nav">
+  <button class="active" onclick="showPage('dashboard',this)"><span class="icon">📊</span>Home</button>
+  <button onclick="showPage('staff',this)"><span class="icon">👨‍⚕️</span>Staff</button>
+  <button onclick="showPage('attendance',this)"><span class="icon">📅</span>Attend</button>
+  <button onclick="showPage('salary',this)"><span class="icon">💰</span>Salary</button>
+  <button onclick="showPage('patients',this)"><span class="icon">🧑‍🦱</span>Patient</button>
+  <button onclick="showPage('medicine',this)"><span class="icon">💊</span>Med</button>
+  <button onclick="showPage('billing',this)"><span class="icon">🧾</span>Bill</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let DB=JSON.parse(localStorage.getItem('hospitalDB'))||{staff:[],attendance:{},patients:[],medicines:[],bills:[]};
+function save(){localStorage.setItem('hospitalDB',JSON.stringify(DB))}
+function toast(msg,color='#2e7d32'){const t=document.getElementById('toast');t.textContent=msg;t.style.background=color;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');window.scrollTo(0,0);if(id==='dashboard')renderDashboard();if(id==='staff')renderStaff();if(id==='attendance')renderAttendance();if(id==='salary')calcSalary();if(id==='patients')renderPatients();if(id==='medicine')renderMedicine();if(id==='billing'){renderBills();fillPatientDropdown()}}
+document.getElementById('attDate').value=new Date().toISOString().split('T')[0];
+document.getElementById('salMonth').value=new Date().toISOString().slice(0,7);
+document.getElementById('attDate').addEventListener('change',renderAttendance);
+function addStaff(){const n=sName.value.trim(),r=sRole.value,p=sPhone.value.trim(),s=+sSalary.value;if(!n||!s)return toast('⚠️ Naam aur salary bharein','#c62828');DB.staff.push({id:Date.now(),name:n,role:r,phone:p,salary:s});save();renderStaff();sName.value=sPhone.value=sSalary.value='';toast('✅ Staff add ho gaya')}
+function deleteStaff(id){if(!confirm('Delete?'))return;DB.staff=DB.staff.filter(s=>s.id!==id);save();renderStaff();toast('🗑️ Delete','#c62828')}
+function renderStaff(){const t=document.getElementById('staffTable');if(!DB.staff.length){t.innerHTML='<tr><td class="empty">Koi staff nahi</td></tr>';return}t.innerHTML=`<tr><th>Naam</th><th>Role</th><th>Mobile</th><th>Salary</th><th></th></tr>`+DB.staff.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.role}</td><td>${s.phone||'-'}</td><td>₹${s.salary.toLocaleString('en-IN')}</td><td><button class="btn red small" onclick="deleteStaff(${s.id})">🗑️</button></td></tr>`).join('')}
+function renderAttendance(){const d=attDate.value;const t=document.getElementById('attTable');if(!DB.staff.length){t.innerHTML='<tr><td class="empty">Pehle staff add karein</td></tr>';return}const rec=DB.attendance[d]||{};t.innerHTML=`<tr><th>Naam</th><th>Status</th></tr>`+DB.staff.map(s=>{const st=rec[s.id]||'Present';return`<tr><td><b>${s.name}</b><br><small style="color:#888">${s.role}</small></td><td><select onchange="setAtt('${d}',${s.id},this.value)" style="margin:0;padding:8px;font-size:13px"><option ${st==='Present'?'selected':''}>Present</option><option ${st==='Absent'?'selected':''}>Absent</option><option ${st==='Half Day'?'selected':''}>Half Day</option><option ${st==='Leave'?'selected':''}>Leave</option></select></td></tr>`}).join('')}
+function setAtt(d,i,s){if(!DB.attendance[d])DB.attendance[d]={};DB.attendance[d][i]=s;save()}
+function saveAttendance(){save();toast('✅ Attendance save')}
+function calcSalary(){const m=salMonth.value;if(!m)return;const t=document.getElementById('salTable');if(!DB.staff.length){t.innerHTML='<tr><td class="empty">Staff nahi</td></tr>';return}const dim=new Date(m.split('-')[0],m.split('-')[1],0).getDate();t.innerHTML=`<tr><th>Naam</th><th>Present</th><th>Salary</th><th></th></tr>`;DB.staff.forEach(s=>{let p=0;for(let d=1;d<=dim;d++){const dt=`${m}-${String(d).padStart(2,'0')}`;const st=(DB.attendance[dt]||{})[s.id];if(st==='Present')p++;else if(st==='Half Day')p+=.5}const pd=s.salary/dim;const e=Math.round(pd*p);t.innerHTML+=`<tr><td><b>${s.name}</b></td><td>${p}</td><td><b>₹${e.toLocaleString('en-IN')}</b></td><td><button class="btn small" onclick="payslip(${s.id},'${m}',${p},${e})">📄</button></td></tr>`})}
+function payslip(id,m,p,e){const s=DB.staff.find(x=>x.id===id);const w=window.open('','','width=400,height=600');w.document.write(`<html><head><title>Payslip</title><style>body{font-family:Arial;padding:20px}h2{color:#0d47a1;text-align:center;margin-bottom:5px}.hi{text-align:center;font-size:12px;color:#555;margin-bottom:15px}.l{border-bottom:1px dashed #ccc;margin:10px 0}table{width:100%;font-size:14px}td{padding:6px 0}.tot{font-size:20px;font-weight:bold;color:#2e7d32;text-align:center;margin-top:20px}</style></head><body><h2>🏥 Jeevan Sahara Hospital</h2><div class="hi">📍 Aonla, Bareilly | 📞 8445256491, 6396148530<br>✉️ drjaved7824@gmail.com</div><hr><h2 style="font-size:16px">PAYSLIP</h2><p style="text-align:center">${m}</p><div class="l"></div><table><tr><td>Naam:</td><td><b>${s.name}</b></td></tr><tr><td>Role:</td><td>${s.role}</td></tr><tr><td>Mobile:</td><td>${s.phone||'-'}</td></tr><tr><td>Monthly:</td><td>₹${s.salary.toLocaleString('en-IN')}</td></tr><tr><td>Present:</td><td>${p}</td></tr></table><div class="l"></div><div class="tot">Net: ₹${e.toLocaleString('en-IN')}</div><p style="text-align:center;margin-top:40px;font-size:12px;color:#888">${new Date().toLocaleDateString('en-IN')}</p><script>window.print();<\/script></body></html>`)}
+function addPatient(){const n=pName.value.trim();if(!n)return toast('⚠️ Naam zaroori','#c62828');DB.patients.push({id:Date.now(),name:n,age:pAge.value,gender:pGender.value,phone:pPhone.value.trim(),problem:pProblem.value.trim(),date:new Date().toLocaleDateString('en-IN')});save();renderPatients();pName.value=pAge.value=pPhone.value=pProblem.value='';toast('✅ Patient add')}
+function deletePatient(id){if(!confirm('Delete?'))return;DB.patients=DB.patients.filter(p=>p.id!==id);save();renderPatients();toast('🗑️ Delete','#c62828')}
+function renderPatients(s=''){const t=document.getElementById('patientTable');let l=DB.patients;if(s)l=l.filter(p=>p.name.toLowerCase().includes(s.toLowerCase())||(p.phone||'').includes(s));if(!l.length){t.innerHTML='<tr><td class="empty">Koi patient nahi</td></tr>';return}t.innerHTML=`<tr><th>Naam</th><th>Info</th><th></th></tr>`+l.map(p=>`<tr><td><b>${p.name}</b><br><small>${p.age||'-'}y, ${p.gender}</small></td><td>📞 ${p.phone||'-'}<br><small style="color:#666">${p.problem||'-'}</small></td><td><button class="btn red small" onclick="deletePatient(${p.id})">🗑️</button></td></tr>`).join('')}
+function addMedicine(){const n=mName.value.trim(),q=+mQty.value,p=+mPrice.value,e=mExp.value;if(!n||!q)return toast('⚠️ Naam aur qty','#c62828');DB.medicines.push({id:Date.now(),name:n,qty:q,price:p||0,exp:e});save();renderMedicine();mName.value=mQty.value=mPrice.value=mExp.value='';toast('✅ Medicine add')}
+function deleteMed(id){if(!confirm('Delete?'))return;DB.medicines=DB.medicines.filter(m=>m.id!==id);save();renderMedicine();toast('🗑️ Delete','#c62828')}
+function renderMedicine(){const t=document.getElementById('medTable');if(!DB.medicines.length){t.innerHTML='<tr><td class="empty">Koi medicine nahi</td></tr>';return}const td=new Date();t.innerHTML=`<tr><th>Name</th><th>Qty</th><th>Status</th><th></th></tr>`+DB.medicines.map(m=>{let s='<span class="badge green">OK</span>';if(m.qty<=10)s='<span class="badge orange">Low</span>';if(m.exp){const d=(new Date(m.exp)-td)/864e5;if(d<0)s='<span class="badge red">Expired</span>';else if(d<30)s='<span class="badge orange">Expiring</span>'}return`<tr><td><b>${m.name}</b><br><small>₹${m.price} | ${m.exp||'-'}</small></td><td>${m.qty}</td><td>${s}</td><td><button class="btn red small" onclick="deleteMed(${m.id})">🗑️</button></td></tr>`}).join('')}
+function fillPatientDropdown(){const s=document.getElementById('bPatient');s.innerHTML='<option value="">-- Patient chunein --</option>'+DB.patients.map(p=>`<option value="${p.id}">${p.name} (${p.phone||'-'})</option>`).join('')}
+function addBill(){const pid=bPatient.value;if(!pid)return toast('⚠️ Patient chunein','#c62828');const p=DB.patients.find(x=>x.id==pid);const c=+bConsult.value||0,m=+bMed.value||0,o=+bOther.value||0;const tot=c+m+o;DB.bills.push({id:Date.now(),patientId:pid,patientName:p.name,consult:c,med:m,other:o,total:tot,date:new Date().toLocaleDateString('en-IN')});save();renderBills();bMed.value=bOther.value=0;toast(`✅ Bill: ₹${tot}`)}
+function deleteBill(id){if(!confirm('Delete?'))return;DB.bills=DB.bills.filter(b=>b.id!==id);save();renderBills();toast('🗑️ Delete','#c62828')}
+function renderBills(){const t=document.getElementById('billTable');if(!DB.bills.length){t.innerHTML='<tr><td class="empty">Koi bill nahi</td></tr>';return}t.innerHTML=`<tr><th>Date</th><th>Patient</th><th>Total</th><th></th></tr>`+DB.bills.slice().reverse().map(b=>`<tr><td>${b.date}</td><td><b>${b.patientName}</b></td><td><b>₹${b.total}</b></td><td><button class="btn red small" onclick="deleteBill(${b.id})">🗑️</button></td></tr>`).join('')}
+function renderDashboard(){const td=new Date().toLocaleDateString('en-IN');const ta=DB.attendance[new Date().toISOString().split('T')[0]]||{};const pc=Object.values(ta).filter(s=>s==='Present').length;const tb=DB.bills.filter(b=>b.date===td);const ti=tb.reduce((s,b)=>s+b.total,0);document.getElementById('dashStats').innerHTML=`<div class="stat"><div class="label">Total Staff</div><div class="value">${DB.staff.length}</div></div><div class="stat green"><div class="label">Aaj Present</div><div class="value">${pc}</div></div><div class="stat orange"><div class="label">Total Patients</div><div class="value">${DB.patients.length}</div></div><div class="stat red"><div class="label">Aaj Income</div><div class="value">₹${ti.toLocaleString('en-IN')}</div></div>`;const a=[];DB.medicines.forEach(m=>{if(m.qty<=10)a.push(`<div class="alert warn">⚠️ <b>${m.name}</b> stock kam (${m.qty})</div>`);if(m.exp){const d=(new Date(m.exp)-new Date())/864e5;if(d<0)a.push(`<div class="alert danger">🚫 <b>${m.name}</b> expired</div>`);else if(d<30)a.push(`<div class="alert warn">📅 <b>${m.name}</b> ${Math.round(d)} din mein expire</div>`)}});if(!a.length)a.push('<p style="color:#888;text-align:center;padding:10px">✅ Sab theek hai!</p>');document.getElementById('dashAlerts').innerHTML=a.join('')}
+renderDashboard();
+</script>
+</body>
+</html>
